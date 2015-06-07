@@ -23,3 +23,16 @@ library("lattice")
 library("forecast")
 library("lfe")
 
+"""
+import data set
+"""
+
+dat <- read.csv("~/Documents/Research/projects/isone-stlf/data/REGION.csv")
+
+
+"""
+visualize data if in interactive mode
+"""
+
+hist(dat$load)
+pairs(dat)
