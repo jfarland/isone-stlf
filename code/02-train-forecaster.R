@@ -21,7 +21,10 @@ library("plyr")
 library("date")
 library("lattice")
 library("forecast")
+library("nlme")
+library("mgcv")
 library("lfe")
+library("SemiPar")
 
 """
 import data set
@@ -29,6 +32,7 @@ import data set
 
 dat <- read.csv("~/Documents/Research/projects/isone-stlf/data/REGION.csv")
 
+summary(dat)
 
 """
 visualize data if in interactive mode
@@ -36,3 +40,27 @@ visualize data if in interactive mode
 
 hist(dat$load)
 pairs(dat)
+plot(dat$temp, dat$load)
+
+"""
+create function to prepare modeling data set
+"""
+
+
+
+LFVars <- function()
+
+
+trn <- subset(dat, year<=2011)
+tst <- subset(dat, year>2011)
+  
+"""
+train model
+"""
+fit1 <- spm(trn$load ~ f(trn$temp) + f(trn$hum) + trn$ws + trn$cc, group=trn$hour, family = "gaussian",
+              spar.method = "REML", omit.missing=NULL)
+
+summary(fit1)
+plot(fit1$fitted)
+tstDF <- 
+fcst <- predict(fit1, newdata=tst, se=TRUE)
