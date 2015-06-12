@@ -46,18 +46,24 @@ plot(dat$temp, dat$load)
 create function to prepare modeling data set
 """
 
-
+#create calendar variables
 
 LFVars <- function()
 
 
 trn <- subset(dat, year<=2011)
 tst <- subset(dat, year>2011)
-  
+
+trn <- lag(trn$load, k=24)
+
+trn0 <- data.frame(trn)
+
+
+
 """
 train model
 """
-fit1 <- spm(trn$load ~ f(trn$temp) + f(trn$hum) + trn$ws + trn$cc, group=trn$hour, family = "gaussian",
+fit1 <- spm(trn$load ~ f(trn$temp) + f(trn$hum) + trn$ws + trn$cc +factor(month)+factor(year)+, group=trn$hour, family = "gaussian",
               spar.method = "REML", omit.missing=NULL)
 
 summary(fit1)
