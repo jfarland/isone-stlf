@@ -3,3 +3,7 @@
 .Rproj.user
 
 *.csv
+
+code/.RData
+
+code/.Rhistory
