@@ -102,17 +102,48 @@ for (i in 1 : length(displacements))
   colnames(trn0)[c(i+cols)] = lagnames[i]
 }
 
+for (i in 1 : length(displacements))
+{
+  disp = displacements[i]
+  tst0[,i+cols] <- unlist(shift(tst0$load, -1*disp))
+  colnames(tst0)[c(i+cols)] = lagnames[i]
+}
+
 """
 train model
 """
 
 fit1 <- lme(load ~ factor(month) + factor(year) + factor(day) + factor(hour) + lag24 +lag48 +lag72 +lag96 +lag120 +lag144 + lag168, data = trn0, random = temp + hum + ws + cc, na.action = na.exclude)
 
-
-fit1 <- spm(trn0$load ~  f(trn0$temp)+f(trn0$hum)+ factor(trn0$month) + trn0$lag24 +trn0$lag48 +trn0$lag72 +trn0$lag96 +trn0$lag120 +trn0$lag144 + trn0$lag168, group=trn$hour, family = "gaussian",
+#another amazing reference: http://www.public.iastate.edu/~dnett/S511/
+fit1 <- spm(trn0$load ~  f(trn0$temp, basis="trunc.poly",degree=2)+f(trn0$hum, basis="trunc.poly",degree=2)+ factor(trn0$month) + trn0$lag24 +trn0$lag48 +trn0$lag72 +trn0$lag96 +trn0$lag120 +trn0$lag144 + trn0$lag168, group=trn$hour, family = "gaussian",
               spar.method = "REML", omit.missing=TRUE)
 
+#Simon Wood's R Package is much more robust than Matt Wand's.
+# Reference ---> http://people.bath.ac.uk/sw283/mgcv/tampere/mgcv.pdf
+fit1 <- gam(load ~  s(temp, bs="ps",k=22)+s(hum, bs="ps",k=22)+ s(cc, bs="cp")+ s(ws, bs="cp")+factor(month) + factor(hour) + lag24 +lag48 +lag72 +lag96 + lag120 + lag144 + lag168, family = "gaussian", data = trn0,
+            method = "REML", na.action=na.omit)
+
+fit2 <- gam(load ~  s(temp, bs="cp",k=22)+s(hum, bs="cp",k=22)+ s(cc, bs="cp")+ s(ws, bs="cp")+factor(month) + factor(hour) + lag24 +lag48 +lag72 +lag96 + lag120 + lag144 + lag168, family = "gaussian", data = trn0,
+            method = "REML", na.action=na.omit)
+
+fit3 <- gam(load ~  s(temp, bs="cp",k=22)+s(hum, bs="cp",k=22)+ s(cc, bs="cp")+ s(ws, bs="cp")+factor(month) + factor(hour) + lag24 +lag48 +lag72 +lag96 + lag120 + lag144 + lag168, family = "gaussian", data = trn0,
+            method = "REML", na.action=na.omit)
+
+gam.check(fit1)
+plot(fitted(fit1), residuals(fit1))
 summary(fit1)
 plot(fit1)
 anova(fit1)
-fcst <- predict(fit1, newdata=tst0, se=TRUE)
+
+#out of sample data
+fcst<-data.frame(predict(fit1,newdata=tst0))
+fcst0<-cbind(tst0$load,fcst)
+fcst0["APE"] <- abs((load-fcst)/load)
+
+summary(fcst0)
+plot(fcst)
+
+vis.gam(fit1, view=c("temp","hum"),theta=320, thicktype="detailed",)
+
+
