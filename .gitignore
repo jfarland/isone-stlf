@@ -2,7 +2,7 @@
 *.xls
 .Rproj.user
 
-*.csv
+
 
 code/.RData
 
