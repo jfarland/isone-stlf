@@ -1,21 +1,19 @@
 
-
 * ISO New England Short Term Load Forecaster
 
+This is the repository for researching and developing probabilistic short to medium term forecasts which rely on data-driven families of semiparametric models across the zones and regions in the New England wholesale electricity market.
+These forecasts are optimized acorss the zonal hierarchy and used to produce a probabilistic forecast for up to a year ahead.
 
-This is the repository for a short-term load forecasting task of the Apollo-project. The goal is to produce a 
-particular modeling technique when estimating short-medium term load forecasts across a distribution grid. This is a 
-comparatively simple task as it has already been done using ISO New England (publically available) data. 
+The goal is to research any additional predictive performance of using a semiparametric modeling framework over a benchmark regression model. Semiparametric models allow for flexible incorporation of nonlinear relationships while maintaining a degree of simplicity and parsimony that other sophisticated approaches don't (e.g. Neural Networks). 
 
-The issue at hand is to convert the existing programs written in SAS to R and to compare the results.
+Team Members:
 
-ISO New England Historical Data: http://www.iso-ne.com/isoexpress/web/reports/pricing/-/tree/zone-info
+Akhanda Shrestha, Graduate Researcher - University of Massachusetts Amherst
+Jonathan Farland, Senior Data Scientist - DNV GL Energy, San Francisco CA
+Bernard Morzuch, Professor, University of Massachusetts Amherst
 
-Google R Style Guide:  http://google-styleguide.googlecode.com/svn/trunk/Rguide.xml
+January 1st, 2016
 
-SemiPar User Guide: http://use-r.com/SPmanu.pdf
-
-The goal of the Apollo-project is a parsimonious way of forecasting changes in relationships. 
 
 
 
